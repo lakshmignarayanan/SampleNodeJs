@@ -1,0 +1,34 @@
+<html>
+<head>
+<script src="/socket.io/socket.io.js"></script>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+$(document).ready(function(){
+   var socket = io.connect('http://localhost');
+  socket.on('result_display', function (data) {
+    $("#result").html($("#result").html()+"<br/>"+data["sum"]);
+    console.log("got result data"+data);
+  });
+
+  console.log("Socket initiated with server");
+  $("#add").click(function(){
+    console.log("add called");
+    var vala = parseInt($("#a").val());
+    var valb = parseInt($("#b").val());
+    var sum = vala + valb;
+    var result = vala+" + "+valb+" = "+sum;
+    console.log("addition result string"+result);
+    socket.emit("result",{"sum":result});
+    console.log("Result sent to others");
+  }); 
+});
+ 
+</script>
+<input type = "text" id="a" />
+<input type = "text" id ="b" />
+<input type="button" id="add" value="ADD"/>
+<div id="result"></div>
+</body>
+</html>
