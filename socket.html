@@ -6,7 +6,7 @@
 <body>
 <script type="text/javascript">
 $(document).ready(function(){
-   var socket = io.connect('http://pure-hollows-1401.herokuapp.com:8000');
+   var socket = io.connect('http://pure-hollows-1401.herokuapp.com');
   socket.on('result_display', function (data) {
     $("#result").html($("#result").html()+"<br/>"+data["sum"]);
     console.log("got result data"+data);
