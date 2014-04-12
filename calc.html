@@ -1,0 +1,101 @@
+<html>
+<head>
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+</head>
+<body class="mar10 pad10">
+<script type="text/javascript">
+count = 0 ;
+dontsend = false;
+showMessage = function(msg){
+  //forcing showing hack
+  dontsend = true;
+  $("#message").show();
+  $("#message").html(msg);
+ // $("#message").fadeIn().delay(8000);
+}
+$(document).ready(function(){
+   var socket = io.connect('http://pure-hollows-1401.herokuapp.com');
+  socket.on('result_display', function (data) {
+    var spanname = "msg"+count;
+    count++;
+    $("#result").html($("#result").html()+"<br/><span id='"+spanname+"' style='position:relative;left:+500'>"+data["sum"]+"</span>");
+    $("#"+spanname).animate({
+    opacity: 0.7,
+    left: "-=500",
+  }, 1000, function() {
+    // Animation complete.
+  });
+    console.log("got result data"+data);
+  });
+
+  console.log("Socket initiated with server");
+  $("#add").click(function(){
+    console.log("add called");
+    var vala = parseInt($("#a").val());
+    var valb = parseInt($("#b").val());
+    //Checking for not a number
+    if( !(vala >1) && !(vala<1)  || !(valb > 1) && !(valb < 1) ){
+      showMessage("Sorry I am unable to  identify the number format , <a target='_blank' href ='http://bit.ly/1gTGmuC' >Click Here </a>");
+    }
+    else{
+      $("#message").hide();
+      dontsend = false;
+    }
+    var sum = vala + valb;
+    var result = vala+" + "+valb+" = "+sum;
+    console.log("addition result string"+result);
+    if(!dontsend){
+    socket.emit("result",{"sum":result});}
+    else{
+      dontsend=true;
+    }
+    console.log("Result sent to others");
+  }); 
+});
+ 
+</script>
+<div align="center" style="width:30%;margin-left:auto;margin-right:auto;">
+<div class="jumbotron">
+  <h1>Hello! ;)</h1>
+</div>
+<form class="form-inline" role="form">
+  <div class="form-group dispBlock mar10 w200">
+   
+    <input type = "text" id="a"  class="form-control"/>
+  </div>
+  <div class="form-group dispBlock mar10 w200">
+    <input type = "text" id ="b"  class="form-control"/>
+  </div>
+  <div class="form-group dispBlock mar10 w200">
+    <button type="button" id="add" class="btn btn-warning">
+      <span class="glyphicon glyphicon-plus"></span> Add
+    </button>
+  </div>
+   <span id="message"> </span>
+
+</form>
+<div id="result"></div>
+
+</div>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css">
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+<style type="text/css">
+  body{
+    font-size: 14px !important;
+  }
+  .dispBlock{
+    display: block !important;
+  }
+  .mar10{
+    margin: 10px !important;
+  }
+  .pad10{
+    padding: 10px !important;
+  }
+  .w200{
+    width: 200px !important;
+  }
+</style>
+</body>
+</html>
